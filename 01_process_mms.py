@@ -65,8 +65,8 @@ resid_name = image_dir+resid_name
 smopsmodel = smops_dir+smopsmodel
 tricolour_config = 'target_flagging_1.yaml'
 cubical_config = '2GC_delaycal_residuals.parset'
-submit_file = 'submit_jobs.sh'
-kill_file = 'kill_jobs.sh'
+submit_file = 'submit_process_mms_jobs.sh'
+kill_file = 'kill_process_mms_jobs.sh'
 master_job_list = []
 
 

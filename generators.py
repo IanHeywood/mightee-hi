@@ -20,10 +20,10 @@ def write_slurm(runfile,logfile,jobname,time,cpus,mem,syscall):
     f.close()
 
 
-def wsclean(container,msname,datacol,image,fitsmask,chansout,poly,dirty=False):
+def wsclean(container,msname,datacol,imagename,fitsmask,chansout,poly,dirty=False):
     syscall = 'singularity exec '+container+' '
     syscall += 'wsclean -log-time -abs-mem 225 -parallel-reordering 16 '
-    syscall += '-name '+image+' '
+    syscall += '-name '+imagename+' '
     syscall += '-data-column '+datacol+' '
     syscall += '-field 0 '
     syscall += '-size 10240 10240 -scale 1.1asec -use-wgridder -no-update-model-required '
@@ -37,6 +37,22 @@ def wsclean(container,msname,datacol,image,fitsmask,chansout,poly,dirty=False):
     syscall += '-channels-out '+str(chansout)+' '
     syscall += '-join-channels '
     syscall += '-no-mf-weighting '
+    syscall += msname
+    return syscall
+
+
+def image_cube(container,msname,imagename,chan0,chan1,chansout,tempdir):
+    syscall = 'singularity exec '+container+' '
+    syscall += 'wsclean -log-time -abs-mem 225 -parallel-reordering 16 '
+    syscall += '-make-psf -no-dirty '
+    syscall += '-name '+imagename+' '
+    syscall += '-no-mf-weighting -no-update-model-required '
+    syscall += '-data-column CORRECTED_DATA '
+    syscall += '-field 0 -size 4096 4096 -scale 2.0asec '
+    syscall += '-use-wgridder -weight briggs 0.5 '
+    syscall += '-channel-range '+str(chan0)+' '+str(chan1)+' '
+    syscall += '-channels-out '+str(chansout)+' '
+    syscall += '-temp-dir '+tempdir+' '
     syscall += msname
     return syscall
 
