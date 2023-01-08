@@ -238,7 +238,7 @@ f.write('# Image residuals to check continuum subtraction and selfcal\n')
 wsclean_name = 'WSCLN2'
 wsclean_runfile = scripts_dir+'slurm_'+wsclean_name+'.sh'
 wsclean_logfile = wsclean_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-wsclean_syscall = gen.wsclean(container,myms,'CORRECTED_DATA',image_name,fitsmask,chansout,poly,dirty=True)
+wsclean_syscall = gen.wsclean(container,myms,'CORRECTED_DATA',resid_name,fitsmask,chansout,poly,dirty=True)
 gen.write_slurm(wsclean_runfile,wsclean_logfile,wsclean_name,'24:00:00',32,'230GB',wsclean_syscall)
 run_command = wsclean_name+"=`sbatch -d afterok:"+post_loop_dependencies+" "+wsclean_runfile+" | awk '{print $4}'`\n"
 f.write(run_command)
