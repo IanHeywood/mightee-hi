@@ -17,7 +17,7 @@ gen.hello()
 # Band, nchan, smopschans, time-chunk, chansout, polyorder
 band_info = {'LOW' : ['LOW', 1818, 909, 12, 10, 4],
     'MID' : ['MID', 8805, 1761, 4, 10, 4],
-    'HIGH' : ['HIGH', 1531, 1531, 12, 4, 2]}
+    'HIGH' : ['HIGH', 1531, 1531, 12, 6, 3]}
 
 
 # ------------------------------------------------------------------
