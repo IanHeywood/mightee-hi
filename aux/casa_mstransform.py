@@ -6,6 +6,7 @@ with (open("aux/config.json")) as f:
 	config = json.load(f)
 
 mslist = glob.glob('*.ms')
+CWD = os.getcwd()+'/'
 
 for myms in mslist:
 
@@ -31,6 +32,9 @@ for myms in mslist:
 		opdir = config[band]['band']
 		if not os.path.isdir(opdir):
 			os.mkdir(opdir)
+		for item in ['01_process_mms.py','02_image_channels.py','generators.py','aux']:
+			syscall = 'ln -s '+CWD+item+' '+opdir+'/'+item
+			os.system(syscall)
 		spw_selection = config[band]['spw_selection']
 		opms = opdir+'/'+myms.replace('.ms','_'+target_name+'_'+band+'.mms')
 		print(opms)
