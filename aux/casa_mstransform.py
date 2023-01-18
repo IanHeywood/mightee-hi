@@ -49,7 +49,7 @@ for myms in mslist:
 			field = str(target_id),
 			scan = scan_selection,
 			spw = spw_selection,
-			datacolumn = 'DATA',
+			datacolumn = config['DATACOL'],
 			usewtspectrum = True,
 			realmodelcol = True,
 			chanaverage = average_chans,

@@ -1,5 +1,6 @@
 {
-  "CONTAINER" : "/users/ianh/containers/oxkat-0.42.sif",
+  "CONTAINER" : "/idia/software/containers/oxkat-0.42.sif",
+  "DATACOL" : "DATA",
   "LOW":
   {
     "band" : "LOW",
