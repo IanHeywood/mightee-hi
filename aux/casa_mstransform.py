@@ -32,7 +32,7 @@ for myms in mslist:
 		if not os.path.isdir(opdir):
 			os.mkdir(opdir)
 		spw_selection = config[band]['spw_selection']
-		opms = myms.replace('.ms','_'+target_name+'_'+band[1]+'.mms')
+		opms = opdir+'/'+myms.replace('.ms','_'+target_name+'_'+band[1]+'.mms')
 		print(opms)
 		if band == 'LOW':
 			average_chans = True
