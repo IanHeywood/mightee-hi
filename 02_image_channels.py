@@ -3,6 +3,7 @@
 
 
 import glob
+import json
 import os
 import sys
 import generators as gen
@@ -16,21 +17,12 @@ else:
     myms = myms[0].rstrip('/')
 
 
-if 'LOW' in myms:
-    band = 'LOW'
-    low_chans = [0]
-    high_chans = [1818]
-    n_chans = [1818]
-elif 'MID' in myms:
-    band = 'MID'
-    low_chans = [0,2200,4400,6600]
-    high_chans = [2200,4400,6600,8805]
-    n_chans = [2200,2200,2200,2205]
-elif 'HIGH' in myms:
-    band = 'HIGH'
-    low_chans = [0]
-    high_chans = [1531]
-    n_chans = [1531]
+for item in ['LOW','MID','HIGH']:
+    if item in myms:
+        band = config[item]['band']
+        n_chans = config[item]['n_chans']
+        low_chans = config[item]['low_chans']
+        high_chans = config[item]['high_chans']
 
 
 container = config['CONTAINER']
