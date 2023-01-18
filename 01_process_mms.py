@@ -18,14 +18,9 @@ gen.hello()
 with (open("aux/config.json")) as f:
     config = json.load(f)
 
-# # Band, nchan, smopschans, time-chunk, chansout, polyorder
-# band_info = {'LOW' : ['LOW', 1818, 909, 12, 10, 4],
-#     'MID' : ['MID', 8805, 1761, 4, 10, 4],
-#     'HIGH' : ['HIGH', 1531, 1531, 12, 6, 3]}
-
-
 # ------------------------------------------------------------------
 # Try to find everything, setup some parameters, do some error capture
+
 
 myms = glob.glob('*.mms')
 if len(myms) == 0:
@@ -34,11 +29,13 @@ if len(myms) == 0:
 else:
     myms = myms[0]
 
+
 mslist = sorted(glob.glob('*.mms/SUBMSS/*.ms'))
 if len(mslist) == 0:
     print('This does not appear to be a MMS, please check')
     sys.exit()
 nsubms = len(mslist)
+
 
 fitsmask = glob.glob('*mask.fits')
 if len(fitsmask) == 0:
@@ -46,6 +43,7 @@ if len(fitsmask) == 0:
     sys.exit()
 else:
     fitsmask = fitsmask[0]
+
 
 for item in ['LOW','MID','HIGH']:
     if item in myms:
@@ -56,15 +54,9 @@ for item in ['LOW','MID','HIGH']:
         chansout = config[item]['chansout']
         polyorder = config[item]['polyorder']
 
-# if 'LOW' in myms:
-#     band, nchan, smopschans, timechunk, chansout, poly = band_info['LOW']
-# elif 'MID' in myms:
-#     band, nchan, smopschans, timechunk, chansout, poly = band_info['MID']
-# elif 'HIGH' in myms:
-#     band, nchan, smopschans, timechunk, chansout, poly = band_info['HIGH']
 
+container = config['CONTAINER']
 CWD = os.getcwd()+'/'
-container = '/users/ianh/containers/oxkat-0.42.sif'
 image_dir = CWD+'IMAGES/'
 smops_dir = CWD+'SMOPSCUBE/'
 cube_dir = CWD+'CUBE/'
@@ -84,7 +76,7 @@ master_job_list = []
 
 
 # ------------------------------------------------------------------
-# Setup folders
+# Setup folders and symlink scripts
 
 
 for i in range(0,nsubms):
