@@ -9,6 +9,13 @@ import sys
 import generators as gen
 
 
+# ------------------------------------------------------------------
+# Load config
+
+with (open("aux/config.json")) as f:
+    config = json.load(f)
+
+
 myms = glob.glob('*.mms')
 if len(myms) == 0:
     print('No MMS found, please check')
