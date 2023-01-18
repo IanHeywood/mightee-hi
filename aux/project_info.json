@@ -1,0 +1,40 @@
+{
+    "band": "UHF",
+    "master_ms": "1658342033_sdp_l0.ms",
+    "nchan": "932",
+    "primary_id": "1",
+    "primary_name": "J1939-6342",
+    "primary_tag": "1934",
+    "ref_ant": "5,2,3,1,0",
+    "secondary_dirs": [
+        [
+            278.41633333333334,
+            -21.06113888888889
+        ]
+    ],
+    "secondary_ids": [
+        "2"
+    ],
+    "secondary_names": [
+        "J1833-2103"
+    ],
+    "target_cal_map": [
+        "J1833-2103"
+    ],
+    "target_dirs": [
+        [
+            279.7541666666667,
+            -10.519166666666667
+        ]
+    ],
+    "target_ids": [
+        "3"
+    ],
+    "target_ms": [
+        "1658342033_sdp_l0_GPM1839-10.ms"
+    ],
+    "target_names": [
+        "GPM1839-10"
+    ],
+    "working_ms": "1658342033_sdp_l0.ms"
+}

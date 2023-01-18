@@ -12,7 +12,7 @@ def write_casa(cubename,fitsname,casafile):
 	f.writelines(['import os\n',
 		'ia.imageconcat("'+cubename+'",infiles="*fits",relax=True,reorder=True)\n',
 		'exportfits(imagename="'+cubename+'",fitsimage="'+fitsname+'")\n',
-		'rm -rf '+cubename+'\n'])
+		'os.system("rm -rf '+cubename+'")\n'])
 	f.close()
 
 
@@ -69,5 +69,6 @@ for i in range(0,chunks):
 			8,
 			'60GB',
 			syscall)
+		os.system('sbatch '+slurmfile)
 		os.chdir('../')
 

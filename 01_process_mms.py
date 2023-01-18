@@ -3,6 +3,7 @@
 
 
 import glob
+import json
 import os
 import sys
 import generators as gen
@@ -12,12 +13,15 @@ gen.hello()
 
 
 # ------------------------------------------------------------------
-# Band params
+# Load config
 
-# Band, nchan, smopschans, time-chunk, chansout, polyorder
-band_info = {'LOW' : ['LOW', 1818, 909, 12, 10, 4],
-    'MID' : ['MID', 8805, 1761, 4, 10, 4],
-    'HIGH' : ['HIGH', 1531, 1531, 12, 6, 3]}
+with (open("aux/config.json")) as f:
+    config = json.load(f)
+
+# # Band, nchan, smopschans, time-chunk, chansout, polyorder
+# band_info = {'LOW' : ['LOW', 1818, 909, 12, 10, 4],
+#     'MID' : ['MID', 8805, 1761, 4, 10, 4],
+#     'HIGH' : ['HIGH', 1531, 1531, 12, 6, 3]}
 
 
 # ------------------------------------------------------------------
@@ -43,12 +47,21 @@ if len(fitsmask) == 0:
 else:
     fitsmask = fitsmask[0]
 
-if 'LOW' in myms:
-    band, nchan, smopschans, timechunk, chansout, poly = band_info['LOW']
-elif 'MID' in myms:
-    band, nchan, smopschans, timechunk, chansout, poly = band_info['MID']
-elif 'HIGH' in myms:
-    band, nchan, smopschans, timechunk, chansout, poly = band_info['HIGH']
+for item in ['LOW','MID','HIGH']:
+    if item in myms:
+        band = config[item]['band']
+        nchan = config[item]['nchan']
+        smopschans = config[item]['smopschans']
+        timechunk = config[item]['timechunk']
+        chansout = config[item]['chansout']
+        polyorder = config[item]['polyorder']
+
+# if 'LOW' in myms:
+#     band, nchan, smopschans, timechunk, chansout, poly = band_info['LOW']
+# elif 'MID' in myms:
+#     band, nchan, smopschans, timechunk, chansout, poly = band_info['MID']
+# elif 'HIGH' in myms:
+#     band, nchan, smopschans, timechunk, chansout, poly = band_info['HIGH']
 
 CWD = os.getcwd()+'/'
 container = '/users/ianh/containers/oxkat-0.42.sif'
@@ -63,8 +76,8 @@ smopsmodel = image_name+'-smops'
 image_name = image_dir+image_name
 resid_name = image_dir+resid_name
 smopsmodel = smops_dir+smopsmodel
-tricolour_config = 'target_flagging_1.yaml'
-cubical_config = '2GC_delaycal_residuals.parset'
+tricolour_config = 'aux/target_flagging_1.yaml'
+cubical_config = 'aux/2GC_delaycal_residuals.parset'
 submit_file = 'submit_process_mms_jobs.sh'
 kill_file = 'kill_process_mms_jobs.sh'
 master_job_list = []
@@ -139,7 +152,7 @@ f.write('# Initial imaging with mask to get continuum model\n')
 wsclean_name = 'WSCLN1'
 wsclean_runfile = scripts_dir+'slurm_'+wsclean_name+'.sh'
 wsclean_logfile = wsclean_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-wsclean_syscall = gen.wsclean(container,myms,'DATA',image_name,fitsmask,chansout,poly,dirty=False)
+wsclean_syscall = gen.wsclean(container,myms,'DATA',image_name,fitsmask,chansout,polyorder,dirty=False)
 gen.write_slurm(wsclean_runfile,wsclean_logfile,wsclean_name,'24:00:00',32,'230GB',wsclean_syscall)
 run_command = wsclean_name+"=`sbatch -d afterok:"+post_loop_dependencies+" "+wsclean_runfile+" | awk '{print $4}'`\n"
 f.write(run_command)
@@ -238,7 +251,7 @@ f.write('# Image residuals to check continuum subtraction and selfcal\n')
 wsclean_name = 'WSCLN2'
 wsclean_runfile = scripts_dir+'slurm_'+wsclean_name+'.sh'
 wsclean_logfile = wsclean_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-wsclean_syscall = gen.wsclean(container,myms,'CORRECTED_DATA',resid_name,fitsmask,chansout,poly,dirty=True)
+wsclean_syscall = gen.wsclean(container,myms,'CORRECTED_DATA',resid_name,fitsmask,chansout,polyorder,dirty=True)
 gen.write_slurm(wsclean_runfile,wsclean_logfile,wsclean_name,'24:00:00',32,'230GB',wsclean_syscall)
 run_command = wsclean_name+"=`sbatch -d afterok:"+post_loop_dependencies+" "+wsclean_runfile+" | awk '{print $4}'`\n"
 f.write(run_command)

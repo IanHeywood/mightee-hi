@@ -1,15 +1,13 @@
 import glob
+import json
 import os
+
+with (open("aux/config.json")) as f:
+	config = json.load(f)
 
 mslist = glob.glob('*.ms')
 
 for myms in mslist:
-	myms = '1601667467_sdp_l0.32k.ms'
-
-	bands = [('0:960~1150MHz','LOW'),
-		('0:1290~1520MHz','MID'),
-		('0:1610~1650MHz','HIGH')]
-
 
 	tb.open(myms+'::FIELD')
 	field_names = tb.getcol('NAME')
@@ -29,13 +27,14 @@ for myms in mslist:
 
 	scan_selection = ','.join(str(tt) for tt in target_scans)
 
-	for band in bands:
-		opdir = band[1]
+	for band in ['LOW','MID','HIGH']:
+		opdir = config[band]['band']
 		if not os.path.isdir(opdir):
 			os.mkdir(opdir)
-		spw_selection = band[0]
+		spw_selection = config[band]['spw_selection']
 		opms = myms.replace('.ms','_'+target_name+'_'+band[1]+'.mms')
-		if band[1] == 'LOW':
+		print(opms)
+		if band == 'LOW':
 			average_chans = True
 			chan_bin = 4
 		else:
