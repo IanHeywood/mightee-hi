@@ -35,7 +35,7 @@ for myms in mslist:
 		for item in ['01_process_mms.py','02_image_channels.py','generators.py','aux']:
 			syscall = 'ln -s '+CWD+item+' '+opdir+'/'+item
 			os.system(syscall)
-		spw_selection = config[band]['spw_selection']
+		spw_selection = str(config[band]['spw_selection'])
 		opms = opdir+'/'+myms.replace('.ms','_'+target_name+'_'+band+'.mms')
 		print(opms)
 		if band == 'LOW':
@@ -45,11 +45,11 @@ for myms in mslist:
 			average_chans = False
 			chan_bin = 1
 		mstransform(vis = myms,
-			outputvis = opms,
+			outputvis = str(opms),
 			field = str(target_id),
-			scan = scan_selection,
-			spw = spw_selection,
-			datacolumn = config['DATACOL'],
+			scan = str(scan_selection),
+			spw = str(spw_selection),
+			datacolumn = str(config['DATACOL']),
 			usewtspectrum = True,
 			realmodelcol = True,
 			chanaverage = average_chans,
