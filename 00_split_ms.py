@@ -28,7 +28,7 @@ f.write('# mstransform to split out sub-bands and Doppler correct\n')
 split_name = 'MSTRANS'
 split_runfile = scripts_dir+'slurm_'+split_name+'.sh'
 split_logfile = split_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-split_syscall = 'casa -c aux/casa_mstransform.py --nologger --log2term --nogui\n'
+split_syscall = 'singularity exec '+container+' casa -c aux/casa_mstransform.py --nologger --log2term --nogui\n'
 gen.write_slurm(split_runfile,split_logfile,split_name,'48:00:00',16,'115GB',split_syscall)
 split_run_command = split_name+"=`sbatch "+split_runfile+" | awk '{print $4}'`\n"
 f.write(split_run_command)
