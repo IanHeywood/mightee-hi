@@ -219,7 +219,7 @@ for submsname in mslist:
     f.write('# Flagging '+submsname+'\n')
     flag_name = 'TRICO2'+label
     flag_runfile = scripts_dir+'slurm_'+flag_name+'.sh'
-    flag_logfile = logs_dir+flag_runfile.replace('.sh','.log')
+    flag_logfile = flag_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
     flag_syscall = gen.tricolour(container,submsname,tricolour_config,'CORRECTED_DATA',residuals=True)
     gen.write_slurm(flag_runfile,flag_logfile,flag_name,'03:00:00',16,'115GB',flag_syscall)
     flag_run_command = flag_name+"=`sbatch -d afterok:$"+selfcal_name+" "+flag_runfile+" | awk '{print $4}'`\n"
