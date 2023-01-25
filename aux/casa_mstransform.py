@@ -28,7 +28,7 @@ for myms in mslist:
 
 	scan_selection = ','.join(str(tt) for tt in target_scans)
 
-	for band in ['LOW','MID','HIGH']:
+	for band in ['MID','LOW','HIGH']:
 		opdir = config[band]['band']
 		if not os.path.isdir(opdir):
 			os.mkdir(opdir)
@@ -61,4 +61,4 @@ for myms in mslist:
 			regridms = True,
 			mode = 'channel',
 			outframe = 'BARY',
-			interpolation = 'nearest')
+			interpolation = 'linear')
