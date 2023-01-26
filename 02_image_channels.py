@@ -43,8 +43,8 @@ for mydir in [cube_dir,scripts_dir,logs_dir]:
     if not os.path.isdir(mydir): os.mkdir(mydir)
 
 
-submit_file = 'submit_make_cube_jobs.sh'
-kill_file = 'kill_make_cube_jobs.sh'
+submit_file = 'submit_image_channels_jobs.sh'
+kill_file = 'kill_image_channels_jobs.sh'
 master_job_list = []
 
 
