@@ -4,7 +4,7 @@
 
 import glob
 import re
-import shutil
+import os
 
 
 def natural_sort(l): 
@@ -28,8 +28,10 @@ for image in image_list:
 	chan = str(i).zfill(4)
 	opimage = image.split('.mms')[0]+'.mms_cube_r0p5-'+chan+'-image.fits'
 	print(chan,image,opimage)
+	os.rename(image,opimage)
 	for suffix in suffixes:
 		infile = image.replace('-image.fits',suffix)
 		outfile = opimage.replace('-image.fits',suffix)
 		print(chan,infile,outfile)
+		os.rename(infile,outfile)
 	i+=1
