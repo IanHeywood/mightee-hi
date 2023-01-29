@@ -3,8 +3,9 @@
 
 
 import glob
-import re
 import os
+import re
+import sys
 
 
 def natural_sort(l): 
@@ -21,6 +22,11 @@ def natural_sort(l):
 suffixes = ['-psf.fits','-image.pbcor.fits','-image.pb.fits']
 
 image_list = natural_sort(glob.glob('*image.fits'))
+
+for image in image_list:
+	if 'MFS' in image:
+		print('MFS images are still here, please check this.')
+		sys.exit()
 
 i = 0
 
