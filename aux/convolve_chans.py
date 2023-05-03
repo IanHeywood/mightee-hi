@@ -63,63 +63,64 @@ def conv(infits,beam,opdir,proc):
 
 	proc = str(proc).zfill(2)
 
-	logging.info(f'[Process {proc}] Convolving {infits}')
-
-	cropsize = 51
-
-	template_fits = 'beam_template_HI.fits'
-	target_beam_fits = opdir+'/'+infits.split('/')[-1].replace('.fits','_target_beam.fits')
-	restoring_beam_fits = opdir+'/'+infits.split('/')[-1].replace('.fits','_restoring_beam.fits')
-	kernel_fits = opdir+'/'+infits.split('/')[-1].replace('.fits','_kernel.fits')
 	convolved_fits = opdir+'/'+infits.split('/')[-1].replace('.fits','.conv.fits')
-    shutil.copyfile(template_fits,target_beam_fits)
-    shutil.copyfile(template_fits,restoring_beam_fits)
-    shutil.copyfile(infits,convolved_fits)
 
-	# The target beam, circular Gaussian
-	target_bmaj = target_beam / 3600.0
-	target_bmin = target_beam / 3600.0
-	target_bpa = 0.0
-	
-	# The existing fitted beam and pixel size
-	fitted_bmaj, fitted_bmin, fitted_bpa, pixscale = get_psf(infits)
+	if os.path.isfile(convolved_fits):
+		logging.info(f'[Process {proc}] Skipping {infits}')
+	else:		
+		logging.info(f'[Process {proc}] Convolving {infits}')
 
-	logging.info(f'[Process {proc}] Fitted beam: {fitted_bmaj} {fitted_bmin} {fitted_bpa}')
+		cropsize = 51
+		template_fits = 'beam_template_HI.fits'
+		target_beam_fits = opdir+'/'+infits.split('/')[-1].replace('.fits','_target_beam.fits')
+		restoring_beam_fits = opdir+'/'+infits.split('/')[-1].replace('.fits','_restoring_beam.fits')
+		kernel_fits = opdir+'/'+infits.split('/')[-1].replace('.fits','_kernel.fits')
 
-	# Generate and flush image of target beam
-    target_xstd = target_bmin/(2.3548*pixscale)
-    target_ystd = target_bmaj/(2.3548*pixscale)
-    target_theta = deg2rad(target_bpa)
-    target_gaussian = Gaussian2DKernel(x_stddev=target_xstd,y_stddev=target_ystd,theta=target_theta,x_size=cropsize,y_size=cropsize,mode='center')
-    target_beam_image = target_gaussian.array
-    target_beam_image = target_beam_image / numpy.max(target_beam_image)
-    flush_fits(target_beam_image,target_beam_fits)
+	    shutil.copyfile(template_fits,target_beam_fits)
+	    shutil.copyfile(template_fits,restoring_beam_fits)
+	    shutil.copyfile(infits,convolved_fits)
 
-    # Generate and flush image of fitted beam
-    fitted_xstd = fitted_bmin/(2.3548*pixscale)
-    fitted_ystd = fitted_bmaj/(2.3548*pixscale)
-    fitted_theta = deg2rad(fitted_bpa)
-    restoring = Gaussian2DKernel(x_stddev=fitted_xstd,y_stddev=fitted_ystd,theta=fitted_theta,x_size=cropsize,y_size=cropsize,mode='center')
-    restoring_beam_image = restoring.array
-    restoring_beam_image = restoring_beam_image / numpy.max(restoring_beam_image)
-    flush_fits(restoring_beam_image,restoring_beam_fits)
+		# The target beam, circular Gaussian
+		target_bmaj = target_beam / 3600.0
+		target_bmin = target_beam / 3600.0
+		target_bpa = 0.0
+		
+		# The existing fitted beam and pixel size
+		fitted_bmaj, fitted_bmin, fitted_bpa, pixscale = get_psf(infits)
 
-    # Run pypher to generate homogenisation kernel
-    os.system('pypher '+restoring_beam_fits+' '+target_beam_fits+' '+kernel_fits)
+		logging.info(f'[Process {proc}] Fitted beam: {fitted_bmaj} {fitted_bmin} {fitted_bpa}')
 
-    # Open channel image and convolve with homogenisation kernel
-    input_image = get_image(infits)
-    homogenisation_kernel = get_image(kernel_fits)
-    input_conv_image = scipy.signal.fftconvolve(input_image, homogenisation_kernel, mode='same')
-	logging.info(f'[Process {proc}] Writing {convolved_fits}')
-    flush_fits(input_conv_image,convolved_fits)
+		# Generate and flush image of target beam
+	    target_xstd = target_bmin/(2.3548*pixscale)
+	    target_ystd = target_bmaj/(2.3548*pixscale)
+	    target_theta = deg2rad(target_bpa)
+	    target_gaussian = Gaussian2DKernel(x_stddev=target_xstd,y_stddev=target_ystd,theta=target_theta,x_size=cropsize,y_size=cropsize,mode='center')
+	    target_beam_image = target_gaussian.array
+	    target_beam_image = target_beam_image / numpy.max(target_beam_image)
+	    flush_fits(target_beam_image,target_beam_fits)
 
-	logging.info(f'[Process {proc}] Cleaning up')
-	for ii in [target_beam_fits,restoring_beam_fits,kernel_fits]:
-		os.remove(ii)
-	pypherlogs = glob.glob(opdir+'/*kernel.log')
-	for ii in pypherlogs:
-		os.remove(ii)
+	    # Generate and flush image of fitted beam
+	    fitted_xstd = fitted_bmin/(2.3548*pixscale)
+	    fitted_ystd = fitted_bmaj/(2.3548*pixscale)
+	    fitted_theta = deg2rad(fitted_bpa)
+	    restoring = Gaussian2DKernel(x_stddev=fitted_xstd,y_stddev=fitted_ystd,theta=fitted_theta,x_size=cropsize,y_size=cropsize,mode='center')
+	    restoring_beam_image = restoring.array
+	    restoring_beam_image = restoring_beam_image / numpy.max(restoring_beam_image)
+	    flush_fits(restoring_beam_image,restoring_beam_fits)
+
+	    # Run pypher to generate homogenisation kernel
+	    os.system('pypher '+restoring_beam_fits+' '+target_beam_fits+' '+kernel_fits)
+
+	    # Open channel image and convolve with homogenisation kernel
+	    input_image = get_image(infits)
+	    homogenisation_kernel = get_image(kernel_fits)
+	    input_conv_image = scipy.signal.fftconvolve(input_image, homogenisation_kernel, mode='same')
+		logging.info(f'[Process {proc}] Writing {convolved_fits}')
+	    flush_fits(input_conv_image,convolved_fits)
+
+		# logging.info(f'[Process {proc}] Cleaning up')
+		# for ii in [target_beam_fits,restoring_beam_fits,kernel_fits]:
+		# 	os.remove(ii)
 
 
 if __name__ == '__main__':
