@@ -80,10 +80,10 @@ def conv(infits,beam,opdir,proc):
 	    shutil.copyfile(template_fits,restoring_beam_fits)
 	    shutil.copyfile(infits,convolved_fits)
 
-		# The target beam, circular Gaussian
-		target_bmaj = target_beam / 3600.0
-		target_bmin = target_beam / 3600.0
-		target_bpa = 0.0
+		# The target beam
+		target_bmaj = beam[0]
+		target_bmin = beam[1]
+		target_bpa = beam[2]
 		
 		# The existing fitted beam and pixel size
 		fitted_bmaj, fitted_bmin, fitted_bpa, pixscale = get_psf(infits)
@@ -128,19 +128,23 @@ if __name__ == '__main__':
 	# Command line options
 	parser = OptionParser(usage = '%prog [options]')
 	parser.add_option('--fitspath', dest = 'fits_path', default = '', help = 'Path to input FITS files')
-	parser.add_option('--targetbeam', dest = 'target_beam', default = '', help = 'Size of target beam in arcsec')
+	parser.add_option('--bmaj', dest = 'target_bmaj', default = '', help = 'Major axis of target beam in arcsec')
+	parser.add_option('--bmin', dest = 'target_bmin', default = '', help = 'Minor axis of target beam in arcsec')
+	parser.add_option('--bpa', dest = 'target_bpa', default = '', help = 'Position angle of target beam in degrees')
 	parser.add_option('--opdir', dest = 'opdir', default = '', help = 'Output directory')
 	parser.add_option('-j', dest = 'j', default = 12, help = 'Number of parallel worker processes (default = 12)')
 
 	(options,args) = parser.parse_args()
 	fits_path = options.fits_path
-	target_beam = float(options.target_beam)
+	target_bmaj = options.target_bmaj
+	target_bmin = options.target_bmin
+	target_bpa = options.target_bpa
 	opdir = options.opdir
 	j = int(options.j)
 
 
 	# Make sure all required options are specified
-	if '' in [fits_path,target_beam,opdir]:
+	if '' in [fits_path,target_bmaj,target_bmin,target_bpa,opdir]:
 		print('Please specify all required inputs')
 		sys.exit()
 
@@ -168,7 +172,12 @@ if __name__ == '__main__':
 	nfits = len(fitslist)
 	logging.info(f'Found {nfits} FITS files')
 
-	ibeams = target_beam*numpy.ones(len(fitslist))
+	target_bmaj = float(target_bmaj)/3600.0
+	target_bmin = float(target_bmin)/3600.0
+	target_bpa = float(target_bpa)
+	beam = [target_bmaj,target_bmin,target_bpa]	
+
+	ibeams = [beam]*nfits
 	iopdirs = [opdir]*nfits
 	iproc = numpy.arange(0,nfits)
 
