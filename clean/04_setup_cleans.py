@@ -38,6 +38,8 @@ scan.close()
 
 idx = 0
 
+nope = ['SCRIPTS/slurm_image_cube_1617809470_sdp_l0_COSMOS_1_MID_4609-4992.mms.sh','SCRIPTS/slurm_image_cube_1586705155_sdp_l2.full_J0959+0151_MID_4609-4992.mms.sh']
+
 for ptg in ptgs:
     os.chdir(ptg)
     if not os.path.isdir('SCRIPTS'): os.mkdir('SCRIPTS')
@@ -62,21 +64,27 @@ for ptg in ptgs:
         runfile = 'SCRIPTS/slurm_image_cube_'+myms.rstrip('/')+'.sh'
         logfile = 'LOGS/slurm_image_cube_'+myms.rstrip('/')+'.log'
 
-        print('# '+ptg,chan0,chan1,nchan,field,maskcube)
-
-        tempdir = 'output_'+myms+'_'+jobname
-        opname = tempdir+'/img_'+myms+'_r0p0'
+        opdir = 'output_'+myms+'_'+jobname
+        if not os.path.isdir(opdir): os.mkdir(opdir)
+        opname = opdir+'/img_'+myms+'_r0p0'
 
         syscall = 'singularity exec '+container+' wsclean -log-time '
         syscall += '-abs-mem 225 -parallel-reordering 8 -name '+opname+' '
-        syscall += '-tempdir '+tempdir+' -data-column DATA -parallel-deconvolution 2048 '
+        syscall += '-tempdir '+opdir+' -data-column DATA -parallel-deconvolution 2048 '
         syscall += '-field 0 -size 4096 4096 -scale 2.0asec -use-wgridder -weight briggs 0.0 '
         syscall += '-niter 80000 -gain 0.15 -mgain 0.9 -channels-out '+str(nchan)+' '
         syscall += '-channel-range 0 '+str(nchan)+' -fits-mask '+maskcube+' '
-        syscall += '-threshold 0.00013 '+myms
+        syscall += '-auto-threshold 1.0 '+myms
 
         write_slurm(runfile,logfile,jobname,'07:00:00',32,'230GB',syscall)
-        print('sbatch '+runfile)
+        if runfile not in nope:
+            print('# '+ptg,chan0,chan1,nchan,field,maskcube)
+            print('sbatch '+runfile)
+            print('')
+        else:
+            print('\n')
+            print(runfile,'nope')
+            print('************\n')
         msid += 1
     os.chdir('../')
     idx += 1
