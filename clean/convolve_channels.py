@@ -177,7 +177,7 @@ def process_chan(chan):
             logging.info(f'[{chan}] Writing {opfits} [Final convolved image]')
             flush_fits(final_image,opfits)
 
-            logging.info(f'[{chan}] Adding beam info to header {fitsfile}')
+            logging.info(f'[{chan}] Adding beam info to header {opfits}')
             beam_header(opfits,target_bmaj,target_bmin,target_bpa)
 
         else:
