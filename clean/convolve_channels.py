@@ -185,7 +185,7 @@ def process_chan(chan):
             logging.info(f'[{chan}] Either fitted beam has failed (blank channel?) or {opfits} exists, skipping')
 
 imagelist = sorted(glob.glob('*'+prefix+'*/*image.fits'))
-j = 24
+j = 18
 chans = []
 
 for ii in imagelist:
