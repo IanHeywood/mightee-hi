@@ -128,7 +128,8 @@ def process_chan(chan):
         bmaj = beam[1]*scale_factor
         bmin = beam[2]*scale_factor
 
-        if bmaj != 0.0 and bmin != 0.0:
+        if bmaj != 0.0 and bmin != 0.0 and not os.isfile(opfits):
+
             bpa = beam[3]
             shutil.copyfile(beam[0],opfits)
             shutil.copyfile(beam_template,target_beam_fits)
@@ -179,6 +180,9 @@ def process_chan(chan):
             logging.info(f'[{chan}] Adding beam info to header {fitsfile}')
             beam_header(opfits,target_bmaj,target_bmin,target_bpa)
 
+        else:
+
+            logging.info(f'[{chan}] Either fitted beam has failed (blank channel?) or {opfits} exists, skipping')
 
 imagelist = sorted(glob.glob('*'+prefix+'*/*image.fits'))
 j = 24
