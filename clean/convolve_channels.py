@@ -24,7 +24,7 @@ prefix = sys.argv[1]
 
 date_time = datetime.now()
 timestamp = date_time.strftime('%d%m%Y_%H%M%S')
-logfile = 'chanconv_'+prefix+'_'+timestamp+'.log'
+logfile = 'chanconv_'+prefix.replace('*','').replace('/','')+'_'+timestamp+'.log'
 #logging.basicConfig(filename=logfile, level=logging.DEBUG, format='%(asctime)s:: %(levelname)-5s :: %(message)s %(funcName)s', datefmt='%d/%m/%Y %H:%M:%S ')
 logging.basicConfig(filename=logfile, level=logging.INFO, format='%(asctime)s:: %(levelname)-5s :: %(message)s', datefmt='%d/%m/%Y %H:%M:%S ',force=True)
 logging.getLogger().addHandler(logging.StreamHandler())
@@ -128,7 +128,7 @@ def process_chan(chan):
         bmaj = beam[1]*scale_factor
         bmin = beam[2]*scale_factor
 
-        if bmaj != 0.0 and bmin != 0.0 and not os.isfile(opfits):
+        if bmaj != 0.0 and bmin != 0.0 and not os.path.isfile(opfits):
 
             bpa = beam[3]
             shutil.copyfile(beam[0],opfits)
