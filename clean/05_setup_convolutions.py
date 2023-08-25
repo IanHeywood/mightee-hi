@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # ian.heywood@physics.ox.ac.uk
 
+
 import glob
 import numpy
 import os
@@ -23,19 +24,21 @@ def write_slurm(runfile,logfile,jobname,time,ncpu,mem,syscall):
         'echo "****ELAPSED "$SECONDS" '+jobname+'"\n'])
     f.close()
 
+if not os.path.isdir('SCRIPTS'): os.mkdir('SCRIPTS')
+if not os.path.isdir('LOGS'): os.mkdir('LOGS')
 
-ptgs = sorted(glob.glob('COSMOS*/MID/images/'))
+opdirs = sorted(glob.glob('*/out*'))
+prefixes = []
+for opdir in opdirs:
+    prefix = opdir.split('_MID_')[-1].split('.mms')[0]
+    if prefix not in prefixes: prefixes.append(prefix)
 
-i = 0
 
-for ptg in ptgs:
-    os.chdir(ptg)
-    jobname = 'pony_'+str(i).zfill(2)
-    os.system('cp ../../../pony.py .')
-    runfile = 'slurm_pony_'+jobname+'.sh'
-    logfile = 'slurm_pony_'+jobname+'.log'
-    syscall = 'singularity exec /users/ianh/containers/oxkat-0.42.sif python3 pony.py --threshold 4.8 img'
-    write_slurm(runfile,logfile,jobname,'08:00:00',32,'230GB',syscall)
-    os.system('sbatch '+runfile)
-    os.chdir('../../../')
-    i+=1
+for prefix in prefixes:
+    ch0 = prefix.split('-')[0]
+    jobname = 'CONV'+ch0
+    runfile = 'SCRIPTS/slurm_conv_'+prefix+'.sh'
+    logfile = 'LOGS/slurm_conv_'+prefix+'.log'
+    syscall = 'singularity exec /users/ianh/containers/oxkat-0.41.sif python3 convolve_channels.py /*'+prefix
+    write_slurm(runfile,logfile,jobname,'05:00:00',32,'230GB',syscall)
+    print('sbatch '+runfile)

@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# ian.heywood@physics.ox.ac.uk
+
 import glob
 import os 
 import numpy
