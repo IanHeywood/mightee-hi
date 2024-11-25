@@ -13,6 +13,6 @@ syscall = f'srun --job-name={field} \
      --time=96:00:00 \
      --mem=115GB \
      --output=archive_download.log \
-     bash -c "source ~/venv/katdal/bin/activate && mvftoms.py -o {msname} --no-auto --flags cam,data_lost --applycal l1 --target {field} --quack 1 {token}"'
+     bash -c "source ~/venv/katdal/bin/activate && mvftoms.py --verbose -o {msname} --no-auto --flags cam,data_lost --applycal l1 --target {field} --quack 1 {token}"'
 
 os.system(syscall)
