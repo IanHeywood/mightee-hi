@@ -45,7 +45,7 @@ else:
     fitsmask = fitsmask[0]
 
 
-for item in ['LOW','MID','HIGH']:
+for item in ['L1','L2','L3']:
     if item in myms:
         band = config[item]['band']
         nchan = config[item]['nchan']

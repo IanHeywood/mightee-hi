@@ -3,7 +3,7 @@
   "DATACOL" : "DATA",
   "LOW":
   {
-    "band" : "LOW",
+    "band" : "L1",
     "spw_selection" : "0:960~1150MHz",
     "nchan" : 1818,
     "smopschans" : 909,
@@ -16,7 +16,7 @@
   },
   "MID":
   {
-    "band" : "MID",
+    "band" : "L2",
     "spw_selection" : "0:1290~1520MHz",
     "nchan" : 8805,
     "smopschans" : 1761,
@@ -29,7 +29,7 @@
   },
   "HIGH":
   {
-    "band" : "HIGH",
+    "band" : "L3",
     "spw_selection" : "0:1610~1650MHz",
     "nchan" : 1531,
     "smopschans" : 1531,

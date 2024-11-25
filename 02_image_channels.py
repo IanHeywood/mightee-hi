@@ -24,7 +24,7 @@ else:
     myms = myms[0].rstrip('/')
 
 
-for item in ['LOW','MID','HIGH']:
+for item in ['L1','L2','L3']:
     if item in myms:
         band = config[item]['band']
         n_chans = config[item]['n_chans']
