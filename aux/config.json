@@ -1,7 +1,7 @@
 {
   "CONTAINER" : "/idia/software/containers/oxkat-0.42.sif",
   "DATACOL" : "DATA",
-  "LOW":
+  "L1":
   {
     "band" : "L1",
     "spw_selection" : "0:960~1150MHz",
@@ -14,7 +14,7 @@
     "high_chans" : [1818],
     "n_chans" : [1818]
   },
-  "MID":
+  "L2":
   {
     "band" : "L2",
     "spw_selection" : "0:1290~1520MHz",
@@ -27,7 +27,7 @@
     "high_chans" : [2200,4400,6600,8805],
     "n_chans" : [2200,2200,2200,2205]
   },
-  "HIGH":
+  "L3":
   {
     "band" : "L3",
     "spw_selection" : "0:1610~1650MHz",
