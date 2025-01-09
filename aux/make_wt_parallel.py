@@ -53,12 +53,10 @@ def flush_fits(newimage,fitsfile):
     f.flush()
 
 
-def pbcor(input_fits):
+def makewt(input_fits):
     # Params
     pbcut = 0.3
     beam_model = 'MKAT-AA-L-JIM-2020'
-    pbcor_fits = input_fits.replace('.fits','.pbcor.fits')
-    pb_fits = input_fits.replace('.fits','.pb.fits')
     wt_fits = input_fits.replace('.fits','.wt.fits')
 
     # Setup beam model and apply pbcut
@@ -83,12 +81,6 @@ def pbcor(input_fits):
             beam_image[y][x] = average[int(val)]
 
     # Correct image and write out FITS files
-    input_image = get_image(input_fits)
-    pbcor_image = input_image / beam_image
-    copyfile(input_fits,pbcor_fits)
-    flush_fits(pbcor_image,pbcor_fits)
-    copyfile(input_fits,pb_fits)
-    flush_fits(beam_image,pb_fits)
     copyfile(input_fits,wt_fits)
     flush_fits(beam_image**2.0,wt_fits)
     print('Processed '+input_fits)
@@ -97,9 +89,9 @@ def pbcor(input_fits):
 
 if __name__ == "__main__":
 
-    pattern = sys.argv[1]
+#    pattern = sys.argv[1]
 
     j = 16
-    fitslist = sorted(glob.glob('CUBE/*'+pattern+'*image.fits'))
+    fitslist = sorted(glob.glob('*image.fits'))
     pool = Pool(processes=j)
-    pool.map(pbcor,fitslist)
+    pool.map(makewt,fitslist)
