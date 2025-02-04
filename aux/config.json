@@ -1,6 +1,32 @@
-{
-  "CONTAINER" : "/idia/software/containers/oxkat-0.42.sif",
+{ 
+  "IDIA_CONTAINERS":
+  {
+    "CASA" : "/idia/software/containers/oxkat-0.42.sif",
+    "TRICOLOUR" : "/idia/software/containers/oxkat-0.42.sif",
+    "CUBICAL" : "/idia/software/containers/oxkat-0.42.sif",
+    "QUARTICAL" : "/users/ianh/containers",
+    "WSCLEAN" : "/idia/software/containers/oxkat-0.42.sif",
+    "SMOPS" : "/idia/software/containers/oxkat-0.42.sif",
+    "PBCOR" : "/idia/software/containers/oxkat-0.42.sif"
+  },
+  "UKSRC_CONTAINERS":
+  {
+    "CASA" : "/project/ianh/containers/oxkat-0.42.sif",
+    "TRICOLOUR" : "/project/ianh/containers/tricolour.sif",
+    "CUBICAL" : "/project/ianh/containers/cubical.sif",
+    "QUARTICAL" : "/project/ianh/containers/quartical.sif",
+    "WSCLEAN" : "/project/ianh/containers/wsclean.sif",
+    "SMOPS" : "/project/ianh/containers/oxkat-0.42.sif",
+    "PBCOR" : "/project/ianh/containers/oxkat-0.42.sif"
+  },
+
+  "CONTAINERS" : "UKSRC_CONTAINERS",
+  "SLURM" : 0,
+
   "DATACOL" : "DATA",
+  
+  "L0":
+
   "L1":
   {
     "band" : "L1",
@@ -14,6 +40,7 @@
     "high_chans" : [1818],
     "n_chans" : [1818]
   },
+  
   "L2":
   {
     "band" : "L2",
@@ -27,6 +54,7 @@
     "high_chans" : [2200,4400,6600,8805],
     "n_chans" : [2200,2200,2200,2205]
   },
+  
   "L3":
   {
     "band" : "L3",
@@ -40,6 +68,7 @@
     "high_chans" : [1531],
     "n_chans" : [1531]
   },
+  
   "PBCOR":
   {
     "pbcut" : 0.3,

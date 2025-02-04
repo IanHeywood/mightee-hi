@@ -55,7 +55,13 @@ for item in ['L1','L2','L3']:
         polyorder = config[item]['polyorder']
 
 
-container = config['CONTAINER']
+containers = config['CONTAINERS']
+tricolour_container = config[containers]['TRICOLOUR']
+wsclean_container = config[containers]['WSCLEAN']
+smops_container = config[containers]['SMOPS']
+cubical_container = config[containers]['WSCLEAN']
+quartical_container = config[containers]['QUARTICAL']
+
 CWD = os.getcwd()+'/'
 image_dir = CWD+'IMAGES/'
 smops_dir = CWD+'SMOPSCUBE/'
@@ -123,7 +129,7 @@ for submsname in mslist:
     flag_name = 'TRICO1'+label
     flag_runfile = scripts_dir+'slurm_'+flag_name+'.sh'
     flag_logfile = flag_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-    flag_syscall = gen.tricolour(container,submsname,tricolour_config,'DATA',residuals=False)
+    flag_syscall = gen.tricolour(tricolour_container,submsname,tricolour_config,'DATA',residuals=False)
     gen.write_slurm(flag_runfile,flag_logfile,flag_name,'03:00:00',16,'115GB',flag_syscall)
     flag_run_command = flag_name+"=`sbatch "+flag_runfile+" | awk '{print $4}'`\n"
     f.write(flag_run_command)
@@ -144,7 +150,7 @@ f.write('# Initial imaging with mask to get continuum model\n')
 wsclean_name = 'WSCLN1'
 wsclean_runfile = scripts_dir+'slurm_'+wsclean_name+'.sh'
 wsclean_logfile = wsclean_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-wsclean_syscall = gen.wsclean(container,myms,'DATA',image_name,fitsmask,chansout,polyorder,dirty=False)
+wsclean_syscall = gen.wsclean(wsclean_container,myms,'DATA',image_name,fitsmask,chansout,polyorder,dirty=False)
 gen.write_slurm(wsclean_runfile,wsclean_logfile,wsclean_name,'24:00:00',32,'230GB',wsclean_syscall)
 run_command = wsclean_name+"=`sbatch -d afterok:"+post_loop_dependencies+" "+wsclean_runfile+" | awk '{print $4}'`\n"
 f.write(run_command)
@@ -160,7 +166,7 @@ f.write('# Frequency interpolation of continuum model\n')
 smops_name = 'SMOPS'
 smops_runfile = scripts_dir+'slurm_'+smops_name+'.sh'
 smops_logfile = smops_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-smops_syscall = gen.smops(container,myms,image_name,smopschans,3,smopsmodel)+'\n'
+smops_syscall = gen.smops(smops_container,myms,image_name,smopschans,3,smopsmodel)+'\n'
 for i in range(0,nsubms): # symlink the interpolated models into the temp folders
     smops_syscall += 'ln -s '+smopsmodel+'* temp_'+str(i).zfill(3)+'/\n'
 gen.write_slurm(smops_runfile,smops_logfile,smops_name,'03:00:00',16,'115GB',smops_syscall)
@@ -190,7 +196,7 @@ for submsname in mslist:
     predict_name = 'PRDICT'+label
     predict_runfile = scripts_dir+'slurm_'+predict_name+'.sh'
     predict_logfile = predict_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-    predict_syscall = gen.predict(container,submsname,tempdir,smopschans,smopsmodel.split('/')[-1])
+    predict_syscall = gen.predict(wsclean_container,submsname,tempdir,smopschans,smopsmodel.split('/')[-1])
     gen.write_slurm(predict_runfile,predict_logfile,predict_name,'12:00:00',16,'115GB',predict_syscall)
     predict_run_command = predict_name+"=`sbatch -d afterok:$"+smops_name+" "+predict_runfile+" | awk '{print $4}'`\n"
     f.write(predict_run_command)
@@ -205,7 +211,7 @@ for submsname in mslist:
     selfcal_name = 'CUBICL'+label
     selfcal_runfile = scripts_dir+'slurm_'+selfcal_name+'.sh'
     selfcal_logfile = selfcal_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-    selfcal_syscall = gen.cubical(container,submsname,cubical_config,nchan,timechunk)
+    selfcal_syscall = gen.cubical(cubical_container,submsname,cubical_config,nchan,timechunk)
     gen.write_slurm(selfcal_runfile,selfcal_logfile,selfcal_name,'08:00:00',32,'230GB',selfcal_syscall)
     selfcal_run_command = selfcal_name+"=`sbatch -d afterok:$"+predict_name+" "+selfcal_runfile+" | awk '{print $4}'`\n"
     f.write(selfcal_run_command)
@@ -220,7 +226,7 @@ for submsname in mslist:
     flag_name = 'TRICO2'+label
     flag_runfile = scripts_dir+'slurm_'+flag_name+'.sh'
     flag_logfile = flag_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-    flag_syscall = gen.tricolour(container,submsname,tricolour_config,'CORRECTED_DATA',residuals=True)
+    flag_syscall = gen.tricolour(tricolour_container,submsname,tricolour_config,'CORRECTED_DATA',residuals=True)
     gen.write_slurm(flag_runfile,flag_logfile,flag_name,'03:00:00',16,'115GB',flag_syscall)
     flag_run_command = flag_name+"=`sbatch -d afterok:$"+selfcal_name+" "+flag_runfile+" | awk '{print $4}'`\n"
     f.write(flag_run_command)
@@ -243,7 +249,7 @@ f.write('# Image residuals to check continuum subtraction and selfcal\n')
 wsclean_name = 'WSCLN2'
 wsclean_runfile = scripts_dir+'slurm_'+wsclean_name+'.sh'
 wsclean_logfile = wsclean_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-wsclean_syscall = gen.wsclean(container,myms,'CORRECTED_DATA',resid_name,fitsmask,chansout,polyorder,dirty=True)
+wsclean_syscall = gen.wsclean(wsclean_container,myms,'CORRECTED_DATA',resid_name,fitsmask,chansout,polyorder,dirty=True)
 gen.write_slurm(wsclean_runfile,wsclean_logfile,wsclean_name,'24:00:00',32,'230GB',wsclean_syscall)
 run_command = wsclean_name+"=`sbatch -d afterok:"+post_loop_dependencies+" "+wsclean_runfile+" | awk '{print $4}'`\n"
 f.write(run_command)

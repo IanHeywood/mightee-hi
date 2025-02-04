@@ -32,7 +32,10 @@ for item in ['L1','L2','L3']:
         high_chans = config[item]['high_chans']
 
 
-container = config['CONTAINER']
+containers = config['CONTAINERS']
+wsclean_container = config[containers]['WSCLEAN']
+pbcor_container = config[containers]['PBCOR']
+
 CWD = os.getcwd()+'/'
 cube_dir = CWD+'CUBE/'
 scripts_dir = CWD+'SCRIPTS/'
@@ -70,7 +73,7 @@ for i in range(0,len(low_chans)):
     cube_name = 'CUBE'+str(i)
     cube_runfile = scripts_dir+'slurm_'+cube_name+'.sh'
     cube_logfile = cube_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-    cube_syscall = gen.image_cube(container,myms,image_name,low_chans[i],high_chans[i],n_chans[i],tempdir)
+    cube_syscall = gen.image_cube(wsclean_container,myms,image_name,low_chans[i],high_chans[i],n_chans[i],tempdir)
     gen.write_slurm(cube_runfile,cube_logfile,cube_name,'24:00:00',32,'230GB',cube_syscall)
     run_command = cube_name+"=`sbatch "+cube_runfile+" | awk '{print $4}'`\n"
     f.write(run_command)
@@ -79,7 +82,7 @@ for i in range(0,len(low_chans)):
     pbcor_name = 'PBCOR'+str(i)
     pbcor_runfile = scripts_dir+'slurm_'+pbcor_name+'.sh'
     pbcor_logfile = pbcor_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-    pbcor_syscall = 'singularity exec '+container+' python3 aux/pbcor_parallel.py cube'+str(i)
+    pbcor_syscall = 'singularity exec '+pbcor_container+' python3 aux/pbcor_parallel.py cube'+str(i)
     gen.write_slurm(pbcor_runfile,pbcor_logfile,pbcor_name,'04:00:00',16,'115GB',pbcor_syscall)
     run_command = pbcor_name+"=`sbatch -d afterok:$"+cube_name+" "+pbcor_runfile+" | awk '{print $4}'`\n"
     f.write(run_command)
