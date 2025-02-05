@@ -26,6 +26,18 @@
   "DATACOL" : "DATA",
   
   "L0":
+  {
+    "band" : "L0",
+    "spw_selection" : "0:880~940MHz",
+    "nchan" : 574,
+    "smopschans" : 287,
+    "timechunk" : 4,
+    "chansout" : 7,
+    "polyorder" : 3,
+    "low_chans" : [0],
+    "high_chans" : [0],
+    "n_chans" : [574]
+  },
 
   "L1":
   {

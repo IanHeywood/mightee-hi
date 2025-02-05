@@ -28,7 +28,7 @@ for myms in mslist:
 
 	scan_selection = ','.join(str(tt) for tt in target_scans)
 
-	for band in ['L2','L1','L3']:
+	for band in ['L2','L1','L0','L3']:
 		opdir = config[band]['band']
 		if not os.path.isdir(opdir):
 			os.mkdir(opdir)
@@ -38,7 +38,7 @@ for myms in mslist:
 		spw_selection = str(config[band]['spw_selection'])
 		opms = opdir+'/'+myms.replace('.ms','_'+target_name+'_'+band+'.mms')
 		print(opms)
-		if band == 'L1':
+		if band in ['L0','L1']:
 			average_chans = True
 			chan_bin = 4
 		else:
