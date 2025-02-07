@@ -31,7 +31,7 @@ for item in ['L1','L2','L3']:
         low_chans = config[item]['low_chans']
         high_chans = config[item]['high_chans']
 
-
+slurm = config['SLURM']
 containers = config['CONTAINERS']
 wsclean_container = config[containers]['WSCLEAN']
 pbcor_container = config[containers]['PBCOR']
@@ -73,9 +73,12 @@ for i in range(0,len(low_chans)):
     cube_name = 'CUBE'+str(i)
     cube_runfile = scripts_dir+'slurm_'+cube_name+'.sh'
     cube_logfile = cube_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-    cube_syscall = gen.image_cube(wsclean_container,myms,image_name,low_chans[i],high_chans[i],n_chans[i],tempdir)
+    cube_syscall = gen.image_cube(slurm,wsclean_container,myms,image_name,low_chans[i],high_chans[i],n_chans[i],tempdir)
     gen.write_slurm(cube_runfile,cube_logfile,cube_name,'24:00:00',32,'230GB',cube_syscall)
-    run_command = cube_name+"=`sbatch "+cube_runfile+" | awk '{print $4}'`\n"
+    if slurm:
+        run_command = cube_name+"=`sbatch "+cube_runfile+" | awk '{print $4}'`\n"
+    else:
+        run_command = f'source {cube_runfile}'
     f.write(run_command)
     master_job_list.append(cube_name)
 
@@ -83,20 +86,24 @@ for i in range(0,len(low_chans)):
     pbcor_runfile = scripts_dir+'slurm_'+pbcor_name+'.sh'
     pbcor_logfile = pbcor_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
     pbcor_syscall = 'singularity exec '+pbcor_container+' python3 aux/pbcor_parallel.py cube'+str(i)
-    gen.write_slurm(pbcor_runfile,pbcor_logfile,pbcor_name,'04:00:00',16,'115GB',pbcor_syscall)
-    run_command = pbcor_name+"=`sbatch -d afterok:$"+cube_name+" "+pbcor_runfile+" | awk '{print $4}'`\n"
+    gen.write_slurm(slurm,pbcor_runfile,pbcor_logfile,pbcor_name,'04:00:00',16,'115GB',pbcor_syscall)
+    if slurm:
+        run_command = pbcor_name+"=`sbatch -d afterok:$"+cube_name+" "+pbcor_runfile+" | awk '{print $4}'`\n"
+    else:
+        run_command = f'source pbcor_runfile'
     f.write(run_command)
     master_job_list.append(pbcor_name)
 
 f.write('\n# --------------------------------------------------\n')
-f.write('# Kill commands\n')
-for job_id in master_job_list:
-    if job_id == master_job_list[0]:
-        kill = 'echo "scancel $'+job_id+' #'+job_id+'" > '+kill_file+'\n'
-    else:
-        kill = 'echo "scancel $'+job_id+' #'+job_id+'" >> '+kill_file+'\n'
-    f.write(kill)
-f.close()
+if slurm:
+    f.write('# Kill commands\n')
+    for job_id in master_job_list:
+        if job_id == master_job_list[0]:
+            kill = 'echo "scancel $'+job_id+' #'+job_id+'" > '+kill_file+'\n'
+        else:
+            kill = 'echo "scancel $'+job_id+' #'+job_id+'" >> '+kill_file+'\n'
+        f.write(kill)
+    f.close()
 print('Submit jobs                 : source %s' %submit_file)
 print('----------------------------+---------------------------------------\n')
 
