@@ -21,9 +21,10 @@ def write_slurm(runfile,logfile,jobname,time,cpus,mem,syscall):
 
 
 def wsclean(slurm,binddir,container,msname,datacol,imagename,fitsmask,chansout,poly,dirty=False):
-    syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '
     if binddir != '':
         syscall += '--bind '+binddir+' '
+    syscall += container+' '
     syscall += 'wsclean -log-time -abs-mem 225 -parallel-reordering 16 '
     syscall += '-name '+imagename+' '
     syscall += '-data-column '+datacol+' '
@@ -44,9 +45,10 @@ def wsclean(slurm,binddir,container,msname,datacol,imagename,fitsmask,chansout,p
 
 
 def image_cube(slurm,binddir,container,msname,imagename,chan0,chan1,chansout,tempdir):
-    syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '
     if binddir != '':
         syscall += '--bind '+binddir+' '
+    syscall += container+' '
     syscall += 'wsclean -log-time -abs-mem 225 -parallel-reordering 16 '
     syscall += '-make-psf -no-dirty '
     syscall += '-name '+imagename+' '
@@ -62,9 +64,10 @@ def image_cube(slurm,binddir,container,msname,imagename,chan0,chan1,chansout,tem
 
 
 def smops(slurm,binddir,container,msname,inputprefix,smopschans,polyorder,outputprefix):
-    syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '
     if binddir != '':
         syscall += '--bind '+binddir+' '
+    syscall += container+' '
     syscall += 'smops --ms '+msname+' '
     syscall += '--input-prefix '+inputprefix+' '
     syscall += '--channels-out '+str(smopschans)+' '
@@ -75,9 +78,10 @@ def smops(slurm,binddir,container,msname,inputprefix,smopschans,polyorder,output
 
 
 def predict(slurm,binddir,container,msname,tempdir,chans,image):
-    syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '
     if binddir != '':
         syscall += '--bind '+binddir+' '
+    syscall += container+' '
     syscall += 'wsclean '
     syscall += '-log-time '
     syscall += '-predict '
@@ -91,9 +95,10 @@ def predict(slurm,binddir,container,msname,tempdir,chans,image):
 
 
 def tricolour(slurm,binddir,container,msname,config,datacolumn,residuals):
-    syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '
     if binddir != '':
         syscall += '--bind '+binddir+' '
+    syscall += container+' '
     syscall += 'tricolour -dc '+datacolumn+' '
     syscall += '-nc 8 '
     print('*** Limiting tricolour cores to 8 for UKSRC hardware ***')
@@ -107,9 +112,10 @@ def tricolour(slurm,binddir,container,msname,config,datacolumn,residuals):
 
 def cubical(slurm,binddir,container,msname,parset,nchan,timechunk):
     cubical_name = msname.split('/')[-1]
-    syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '
     if binddir != '':
         syscall += '--bind '+binddir+' '
+    syscall += container+' '
     syscall += 'gocubical '+parset+' '
     syscall += '--data-ms '+msname+' '
     syscall += '--data-time-chunk '+str(timechunk)+' '
@@ -123,9 +129,10 @@ def cubical(slurm,binddir,container,msname,parset,nchan,timechunk):
 
 def cube(slurm,binddir,container,msname,tempdir,cubename,chanstart,chanend,chansout):
     syscall = ''
-    syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '
     if binddir != '':
         syscall += '--bind '+binddir+' '
+    syscall += container+' '
     syscall += 'wsclean -log-time -make-psf -no-dirty -abs-mem 225 '
     syscall += '-temp-dir '+tempdir+' '
     syscall += '-parallel-reordering 16 -name '+cubename+' '
