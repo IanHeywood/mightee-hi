@@ -100,8 +100,8 @@ def tricolour(slurm,binddir,container,msname,config,datacolumn,residuals):
         syscall += '--bind '+binddir+' '
     syscall += container+' '
     syscall += 'tricolour -dc '+datacolumn+' '
-    syscall += '-nc 8 '
-    print('*** Limiting tricolour cores to 8 for UKSRC hardware ***')
+    syscall += '-nw 8 '
+    print('*** Limiting tricolour workers to 8 for UKSRC hardware ***')
     if residuals:
         syscall += '-smc MODEL_DATA '
     syscall += '-c '+config+' '
