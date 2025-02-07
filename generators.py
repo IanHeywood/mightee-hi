@@ -21,9 +21,7 @@ def write_slurm(runfile,logfile,jobname,time,cpus,mem,syscall):
 
 
 def wsclean(slurm,container,msname,datacol,imagename,fitsmask,chansout,poly,dirty=False):
-    syscall = ''
-    if slurm:
-        syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '+container+' '
     syscall += 'wsclean -log-time -abs-mem 225 -parallel-reordering 16 '
     syscall += '-name '+imagename+' '
     syscall += '-data-column '+datacol+' '
@@ -44,9 +42,7 @@ def wsclean(slurm,container,msname,datacol,imagename,fitsmask,chansout,poly,dirt
 
 
 def image_cube(slurm,container,msname,imagename,chan0,chan1,chansout,tempdir):
-    syscall = ''
-    if slurm:
-        syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '+container+' '
     syscall += 'wsclean -log-time -abs-mem 225 -parallel-reordering 16 '
     syscall += '-make-psf -no-dirty '
     syscall += '-name '+imagename+' '
@@ -62,9 +58,7 @@ def image_cube(slurm,container,msname,imagename,chan0,chan1,chansout,tempdir):
 
 
 def smops(slurm,container,msname,inputprefix,smopschans,polyorder,outputprefix):
-    syscall = ''
-    if slurm:
-        syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '+container+' '
     syscall += 'smops --ms '+msname+' '
     syscall += '--input-prefix '+inputprefix+' '
     syscall += '--channels-out '+str(smopschans)+' '
@@ -75,9 +69,7 @@ def smops(slurm,container,msname,inputprefix,smopschans,polyorder,outputprefix):
 
 
 def predict(slurm,container,msname,tempdir,chans,image):
-    syscall = ''
-    if slurm:
-        syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '+container+' '
     syscall += 'wsclean '
     syscall += '-log-time '
     syscall += '-predict '
@@ -91,9 +83,7 @@ def predict(slurm,container,msname,tempdir,chans,image):
 
 
 def tricolour(slurm,container,msname,config,datacolumn,residuals):
-    syscall = ''
-    if slurm:
-        syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '+container+' '
     syscall += 'tricolour -dc '+datacolumn+' '
     syscall += '-nc 8 '
     print('*** Limiting cores to 8 for UKSRC hardware ***')
@@ -107,9 +97,7 @@ def tricolour(slurm,container,msname,config,datacolumn,residuals):
 
 def cubical(slurm,container,msname,parset,nchan,timechunk):
     cubical_name = msname.split('/')[-1]
-    syscall = ''
-    if slurm:
-        syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '+container+' '
     syscall += 'gocubical '+parset+' '
     syscall += '--data-ms '+msname+' '
     syscall += '--data-time-chunk '+str(timechunk)+' '
@@ -123,8 +111,7 @@ def cubical(slurm,container,msname,parset,nchan,timechunk):
 
 def cube(slurm,container,msname,tempdir,cubename,chanstart,chanend,chansout):
     syscall = ''
-    if slurm:
-        syscall = 'singularity exec '+container+' '
+    syscall = 'singularity exec '+container+' '
     syscall += 'wsclean -log-time -make-psf -no-dirty -abs-mem 225 '
     syscall += '-temp-dir '+tempdir+' '
     syscall += '-parallel-reordering 16 -name '+cubename+' '
