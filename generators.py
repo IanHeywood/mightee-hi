@@ -95,6 +95,8 @@ def tricolour(slurm,container,msname,config,datacolumn,residuals):
     if slurm:
         syscall = 'singularity exec '+container+' '
     syscall += 'tricolour -dc '+datacolumn+' '
+    syscall += '-nc 8 '
+    print('*** Limiting cores to 8 for UKSRC hardware ***')
     if residuals:
         syscall += '-smc MODEL_DATA '
     syscall += '-c '+config+' '
