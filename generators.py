@@ -20,8 +20,10 @@ def write_slurm(runfile,logfile,jobname,time,cpus,mem,syscall):
     f.close()
 
 
-def wsclean(slurm,container,msname,datacol,imagename,fitsmask,chansout,poly,dirty=False):
+def wsclean(slurm,binddir,container,msname,datacol,imagename,fitsmask,chansout,poly,dirty=False):
     syscall = 'singularity exec '+container+' '
+    if binddir != '':
+        syscall += '--bind '+binddir+' '
     syscall += 'wsclean -log-time -abs-mem 225 -parallel-reordering 16 '
     syscall += '-name '+imagename+' '
     syscall += '-data-column '+datacol+' '
@@ -41,8 +43,10 @@ def wsclean(slurm,container,msname,datacol,imagename,fitsmask,chansout,poly,dirt
     return syscall
 
 
-def image_cube(slurm,container,msname,imagename,chan0,chan1,chansout,tempdir):
+def image_cube(slurm,binddir,container,msname,imagename,chan0,chan1,chansout,tempdir):
     syscall = 'singularity exec '+container+' '
+    if binddir != '':
+        syscall += '--bind '+binddir+' '
     syscall += 'wsclean -log-time -abs-mem 225 -parallel-reordering 16 '
     syscall += '-make-psf -no-dirty '
     syscall += '-name '+imagename+' '
@@ -57,8 +61,10 @@ def image_cube(slurm,container,msname,imagename,chan0,chan1,chansout,tempdir):
     return syscall
 
 
-def smops(slurm,container,msname,inputprefix,smopschans,polyorder,outputprefix):
+def smops(slurm,binddir,container,msname,inputprefix,smopschans,polyorder,outputprefix):
     syscall = 'singularity exec '+container+' '
+    if binddir != '':
+        syscall += '--bind '+binddir+' '
     syscall += 'smops --ms '+msname+' '
     syscall += '--input-prefix '+inputprefix+' '
     syscall += '--channels-out '+str(smopschans)+' '
@@ -68,8 +74,10 @@ def smops(slurm,container,msname,inputprefix,smopschans,polyorder,outputprefix):
     return syscall
 
 
-def predict(slurm,container,msname,tempdir,chans,image):
+def predict(slurm,binddir,container,msname,tempdir,chans,image):
     syscall = 'singularity exec '+container+' '
+    if binddir != '':
+        syscall += '--bind '+binddir+' '
     syscall += 'wsclean '
     syscall += '-log-time '
     syscall += '-predict '
@@ -82,11 +90,13 @@ def predict(slurm,container,msname,tempdir,chans,image):
     return syscall
 
 
-def tricolour(slurm,container,msname,config,datacolumn,residuals):
+def tricolour(slurm,binddir,container,msname,config,datacolumn,residuals):
     syscall = 'singularity exec '+container+' '
+    if binddir != '':
+        syscall += '--bind '+binddir+' '
     syscall += 'tricolour -dc '+datacolumn+' '
     syscall += '-nc 8 '
-    print('*** Limiting cores to 8 for UKSRC hardware ***')
+    print('*** Limiting tricolour cores to 8 for UKSRC hardware ***')
     if residuals:
         syscall += '-smc MODEL_DATA '
     syscall += '-c '+config+' '
@@ -95,9 +105,11 @@ def tricolour(slurm,container,msname,config,datacolumn,residuals):
     return syscall
 
 
-def cubical(slurm,container,msname,parset,nchan,timechunk):
+def cubical(slurm,binddir,container,msname,parset,nchan,timechunk):
     cubical_name = msname.split('/')[-1]
     syscall = 'singularity exec '+container+' '
+    if binddir != '':
+        syscall += '--bind '+binddir+' '
     syscall += 'gocubical '+parset+' '
     syscall += '--data-ms '+msname+' '
     syscall += '--data-time-chunk '+str(timechunk)+' '
@@ -109,9 +121,11 @@ def cubical(slurm,container,msname,parset,nchan,timechunk):
     return syscall
 
 
-def cube(slurm,container,msname,tempdir,cubename,chanstart,chanend,chansout):
+def cube(slurm,binddir,container,msname,tempdir,cubename,chanstart,chanend,chansout):
     syscall = ''
     syscall = 'singularity exec '+container+' '
+    if binddir != '':
+        syscall += '--bind '+binddir+' '
     syscall += 'wsclean -log-time -make-psf -no-dirty -abs-mem 225 '
     syscall += '-temp-dir '+tempdir+' '
     syscall += '-parallel-reordering 16 -name '+cubename+' '
