@@ -1,6 +1,7 @@
 { 
   "IDIA_CONTAINERS":
   {
+    "BINDDIR" : "",
     "CASA" : "/idia/software/containers/oxkat-0.42.sif",
     "TRICOLOUR" : "/idia/software/containers/oxkat-0.42.sif",
     "CUBICAL" : "/idia/software/containers/oxkat-0.42.sif",
@@ -11,6 +12,7 @@
   },
   "UKSRC_CONTAINERS":
   {
+    "BINDDIR" : "/project",
     "CASA" : "/project/ianh/containers/oxkat-0.42.sif",
     "TRICOLOUR" : "/project/ianh/containers/tricolour.sif",
     "CUBICAL" : "/project/ianh/containers/cubical.sif",
@@ -21,7 +23,7 @@
   },
 
   "CONTAINERS" : "UKSRC_CONTAINERS",
-  "SLURM" : 0,
+  "SLURM" : false,
 
   "DATACOL" : "DATA",
   
