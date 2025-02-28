@@ -86,8 +86,11 @@ for i in range(0,len(low_chans)):
     pbcor_name = 'PBCOR'+str(i)
     pbcor_runfile = scripts_dir+'slurm_'+pbcor_name+'.sh'
     pbcor_logfile = pbcor_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
-    pbcor_syscall = 'singularity exec '+pbcor_container+' python3 aux/pbcor_parallel.py cube'+str(i)
-    gen.write_slurm(slurm,binddir,pbcor_runfile,pbcor_logfile,pbcor_name,'04:00:00',16,'115GB',pbcor_syscall)
+    pbcor_syscall = 'singularity exec '
+    if binddir != '':
+        syscall += '--bind '+binddir+' '
+    syscall += pbcor_container+' python3 aux/pbcor_parallel.py cube'+str(i)
+    gen.write_slurm(pbcor_runfile,pbcor_logfile,pbcor_name,'04:00:00',16,'115GB',pbcor_syscall)
     if slurm:
         run_command = pbcor_name+"=`sbatch -d afterok:$"+cube_name+" "+pbcor_runfile+" | awk '{print $4}'`\n"
     else:
