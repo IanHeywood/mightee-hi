@@ -79,7 +79,7 @@ for i in range(0,len(low_chans)):
     if slurm:
         run_command = cube_name+"=`sbatch "+cube_runfile+" | awk '{print $4}'`\n"
     else:
-        run_command = f'source {cube_runfile}'
+        run_command = f'source {cube_runfile}\n'
     f.write(run_command)
     master_job_list.append(cube_name)
 
@@ -88,13 +88,13 @@ for i in range(0,len(low_chans)):
     pbcor_logfile = pbcor_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
     pbcor_syscall = 'singularity exec '
     if binddir != '':
-        syscall += '--bind '+binddir+' '
-    syscall += pbcor_container+' python3 aux/pbcor_parallel.py cube'+str(i)
+        pbcor_syscall += '--bind '+binddir+' '
+    pbcor_syscall += pbcor_container+' python3 aux/pbcor_parallel.py cube'+str(i)
     gen.write_slurm(pbcor_runfile,pbcor_logfile,pbcor_name,'04:00:00',16,'115GB',pbcor_syscall)
     if slurm:
         run_command = pbcor_name+"=`sbatch -d afterok:$"+cube_name+" "+pbcor_runfile+" | awk '{print $4}'`\n"
     else:
-        run_command = f'source pbcor_runfile'
+        run_command = f'source {pbcor_runfile}\n'
     f.write(run_command)
     master_job_list.append(pbcor_name)
 
