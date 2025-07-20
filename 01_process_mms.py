@@ -156,7 +156,7 @@ wsclean_name = 'WSCLN1'
 wsclean_runfile = scripts_dir+'slurm_'+wsclean_name+'.sh'
 wsclean_logfile = wsclean_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
 wsclean_syscall = gen.wsclean(slurm,binddir,wsclean_container,myms,'DATA',image_name,fitsmask,chansout,polyorder,dirty=False)
-gen.write_slurm(wsclean_runfile,wsclean_logfile,wsclean_name,'24:00:00',32,'230GB',wsclean_syscall)
+gen.write_slurm(wsclean_runfile,wsclean_logfile,wsclean_name,'48:00:00',32,'230GB',wsclean_syscall)
 if slurm:
     run_command = wsclean_name+"=`sbatch -d afterok:"+post_loop_dependencies+" "+wsclean_runfile+" | awk '{print $4}'`\n"
 else:
@@ -270,7 +270,7 @@ wsclean_name = 'WSCLN2'
 wsclean_runfile = scripts_dir+'slurm_'+wsclean_name+'.sh'
 wsclean_logfile = wsclean_runfile.replace('.sh','.log').replace(scripts_dir,logs_dir)
 wsclean_syscall = gen.wsclean(slurm,binddir,wsclean_container,myms,'CORRECTED_DATA',resid_name,fitsmask,chansout,polyorder,dirty=True)
-gen.write_slurm(wsclean_runfile,wsclean_logfile,wsclean_name,'24:00:00',32,'230GB',wsclean_syscall)
+gen.write_slurm(wsclean_runfile,wsclean_logfile,wsclean_name,'48:00:00',32,'230GB',wsclean_syscall)
 if slurm:
     wsclean_run_command = wsclean_name+"=`sbatch -d afterok:"+post_loop_dependencies+" "+wsclean_runfile+" | awk '{print $4}'`\n"
 else:
