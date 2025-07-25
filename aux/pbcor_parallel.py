@@ -87,8 +87,9 @@ def pbcor(input_fits):
     pbcor_image = input_image / beam_image
     copyfile(input_fits,pbcor_fits)
     flush_fits(pbcor_image,pbcor_fits)
-    copyfile(input_fits,pb_fits)
-    flush_fits(beam_image,pb_fits)
+    # No real need for the PB image, just the PB^2 for mosaicking weights
+    # copyfile(input_fits,pb_fits)
+    # flush_fits(beam_image,pb_fits)
     copyfile(input_fits,wt_fits)
     flush_fits(beam_image**2.0,wt_fits)
     print('Processed '+input_fits)
